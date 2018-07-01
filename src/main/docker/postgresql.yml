@@ -1,0 +1,11 @@
+version: '2'
+services:
+    jpualgo-postgresql:
+        image: postgres:9.6.5
+        # volumes:
+        #     - ~/volumes/jhipster/jpualgo/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=jpualgo
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

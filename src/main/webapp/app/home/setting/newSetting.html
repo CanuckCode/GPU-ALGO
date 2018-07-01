@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            ng-click="vm.cancel()">&times;</button>
+    <h4 class="modal-title">Overlock Setting</h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h1>Setting</h1>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+            <form class="form" role="form">
+                <div class="form-group" style="margin-left: auto">
+                    <label for="memory">Memory(MHz)</label>
+                    <input type="text" class="form-control" id="memory" placeholder="Memory(MHz)" ng-model="vm.memoryCapacity">
+                </div>
+                <div class="form-group">
+                    <label for="coreMHZ">Core(MHz)</label>
+                    <input type="text" class="form-control" id="coreMHZ" placeholder="Core(MHz)"
+                           ng-model="vm.coresNumber">
+                </div>
+                <div class="form-group">
+                    <label for="powerCapacity">Power(W) or % of Max</label>
+                    <input type="text" class="form-control" id="powerCapacity" placeholder="Power(W) or % of Max"
+                           ng-model="vm.powerCapacity">
+                </div>
+                <button type="submit" class="btn btn-primary col-md-offset-4" ng-click="vm.save()">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

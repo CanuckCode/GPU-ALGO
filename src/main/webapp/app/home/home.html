@@ -1,0 +1,109 @@
+<div ng-cloak>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Welcome to GPU Overclocking</h1>
+            <h3>The trusted site for maximizing your GPU</h3>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="architecture">GPU Architecture</label>
+                        <select
+                            class="form-control"
+                            id="architecture"
+                            ng-model="vm.overlockOptions.architecture"
+                            ng-change="vm.loadByGpuArchitecture()"
+                            ng-options="architecture as architecture for architecture in vm.architectures">
+                        </select>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label for="brand">GPU BRAND</label>
+                        <select
+                            class="form-control"
+                            id="brand"
+                            name="brand"
+                            ng-model="vm.overlockOptions.brand"
+                            ng-disabled="!vm.enableBrand"
+                            ng-change="vm.loadByGpuBrand()"
+                            ng-options="brand as brand for brand in vm.brands">
+                        </select>
+                    </div>
+                    <div class="form-group" style="padding-left: 40px;">
+                        <label for="model">GPU Model</label>
+                        <select
+                            class="form-control"
+                            id="model"
+                            ng-model="vm.overlockOptions.model"
+                            ng-disabled="!vm.enableModel"
+                            ng-change="vm.loadByGpuModel()"
+                            ng-options="model as model for model in vm.models">
+                        </select>
+                    </div>
+                    <div class="form-group" style="padding-left: 60px;">
+                        <label for="algorithm">Algorithm</label>
+                        <select
+                            class="form-control"
+                            id="algorithm"
+                            ng-model="vm.overlockOptions.algorithm"
+                            ng-disabled="!vm.enableAlgorithm"
+                            ng-change="vm.loadByAlgorithm()"
+                            ng-options="algorithm as algorithm for algorithm in vm.algorithms">
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <h4>Overclock Settings</h4>
+                        <div class="new-overlock-setting" ng-show="vm.isAuthenticated() && vm.allowToAddNewSetting">
+                            <span>Add new setting</span>
+                            <a href="#" ng-click="vm.openNewSetting(vm.overlockOptions)">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                            </a>
+                        </div>
+
+                        <div id="message" ng-show="vm.showVoteWarning">
+                            <div style="padding: 5px;">
+                                <div id="inner-message" class="alert alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    You've already voted for this setting.
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Rank #</th>
+                                    <th>Memory (MHz)</th>
+                                    <th>Core (MHz)</th>
+                                    <th>Power (W) or % of Max</th>
+                                    <th>Votes Up</th>
+                                    <th>Votes Down</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-show="vm.data.length === 0">
+                                <td colspan="6" style="text-align: center">
+                                    <span>NO DATA AVAILABLE</span>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="item in vm.data" ng-show="vm.data.length > 0">
+                                <td>{{ item.position }}</td>
+                                <td>{{ item.memoryCapacity }}</td>
+                                <td>{{ item.coresNumber }}</td>
+                                <td>{{ item.powerCapacity }}</td>
+                                <td ng-click="vm.voteUp(item.id)">{{ item.votesUp }}</td>
+                                <td ng-click="vm.voteDown(item.id)">{{ item.votesDown }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <ul ng-show="vm.totalItems > 5" uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.numberPerPage" ng-model="vm.currentPage" ng-change="vm.pageChanged()"></ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="troll-box">Troll Box</label>
+                    <textarea class="form-control" rows="5" id="troll-box"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
