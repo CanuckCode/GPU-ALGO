@@ -10,6 +10,7 @@ import com.gpualgo.util.exception.VoteException;
 import com.gpualgo.web.rest.errors.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,10 +52,18 @@ public class OverlockController {
         String model,
         String algorithm,
         Integer page,
-        Integer size
+        Integer size,
+        String sortProperty,
+        String sortIt,
+        String searchCondition
     ) {
         try {
-            ResponseDTO settings = settingService.findSettings(architecture, brand, model, algorithm, new PageRequest(page - 1, size));
+            Sort sort = new Sort(Sort.Direction.DESC, "votesUp");
+            PageRequest pageable = new PageRequest(page - 1, size, sort);
+            if (sortProperty != null && sortIt != null) {
+                pageable = new PageRequest(page - 1, size, Sort.Direction.fromString(sortIt), sortProperty);
+            }
+            ResponseDTO settings = settingService.findSettings(architecture, brand, model, algorithm, pageable, searchCondition);
             return ResponseEntity.ok().body(settings);
         } catch (Exception e) {
             ResponseDTO responseDTO = new ResponseDTO();

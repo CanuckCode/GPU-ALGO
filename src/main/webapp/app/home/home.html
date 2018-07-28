@@ -1,8 +1,8 @@
 <div ng-cloak>
     <div class="row">
         <div class="col-md-12">
-            <h1>Welcome to GPU Overclocking</h1>
-            <h3>The trusted site for maximizing your GPU</h3>
+            <h1>Welcome to GPU Overclocking for Miners</h1>
+            <h3>The trusted site for maximizing your GPU returns</h3>
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
@@ -68,25 +68,92 @@
                             </div>
                         </div>
 
+                        <form>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div ng-click="vm.search()" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                                    <input type="text" class="form-control" placeholder="Type search term" ng-model="vm.searchTerm">
+                                </div>
+                            </div>
+                        </form>
+
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Rank #</th>
-                                    <th>Memory (MHz)</th>
-                                    <th>Core (MHz)</th>
-                                    <th>Power (W) or % of Max</th>
-                                    <th>Votes Up</th>
-                                    <th>Votes Down</th>
+                                    <th>
+                                        <span>
+                                            Rank #
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('gpuBrand')">
+                                            GPU Brand
+                                            <span ng-show="vm.sortType == 'gpuBrand' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'gpuBrand' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('gpuModel')">
+                                            GPU Model
+                                            <span ng-show="vm.sortType == 'gpuModel' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'gpuModel' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('algorithm')">
+                                            ALGO
+                                            <span ng-show="vm.sortType == 'algorithm' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'algorithm' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('memoryCapacity')">
+                                            Memory (MHz)
+                                            <span ng-show="vm.sortType == 'memoryCapacity' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'memoryCapacity' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('coresNumber')">
+                                            Core (MHz)
+                                            <span ng-show="vm.sortType == 'coresNumber' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'coresNumber' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('powerCapacity')">
+                                            Power (W) or % of Max
+                                            <span ng-show="vm.sortType == 'powerCapacity' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'powerCapacity' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('votesUp')">
+                                            Votes Up
+                                            <span ng-show="vm.sortType == 'votesUp' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'votesUp' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span ng-click="vm.sort('votesDown')">
+                                            Votes Down
+                                            <span ng-show="vm.sortType == 'votesDown' && !vm.sortIt" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                            <span ng-show="vm.sortType == 'votesDown' && vm.sortIt" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                        </span>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                             <tr ng-show="vm.data.length === 0">
-                                <td colspan="6" style="text-align: center">
+                                <td colspan="9" style="text-align: center">
                                     <span>NO DATA AVAILABLE</span>
                                 </td>
                             </tr>
-                            <tr ng-repeat="item in vm.data" ng-show="vm.data.length > 0">
+                            <tr ng-repeat="item in vm.data | orderBy:sortType" ng-show="vm.data.length > 0">
                                 <td>{{ item.position }}</td>
+                                <td>{{ item.brand }}</td>
+                                <td>{{ item.model }}</td>
+                                <td>{{ item.algorithm }}</td>
                                 <td>{{ item.memoryCapacity }}</td>
                                 <td>{{ item.coresNumber }}</td>
                                 <td>{{ item.powerCapacity }}</td>

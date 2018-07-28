@@ -10,13 +10,13 @@ import com.gpualgo.service.dto.ResponseDTO;
 import com.gpualgo.service.util.VoteStatus;
 import com.gpualgo.util.Util;
 import com.gpualgo.util.exception.VoteException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @Transactional
@@ -44,29 +44,46 @@ public class OverlockSettingService {
         overlockSettingRepository.save(setting);
     }
 
-    public ResponseDTO findSettings(String gpuArchitecture, String gpuBrand, String gpuModel, String algorithm, Pageable pageable) {
-        if (gpuArchitecture != null && Util.isAllEmpty(gpuBrand, gpuModel, algorithm)) {
-            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureOrderByVotesUpDescVotesDownAsc(gpuArchitecture, pageable);
+    public ResponseDTO findSettings(
+        String gpuArchitecture,
+        String gpuBrand,
+        String gpuModel,
+        String algorithm,
+        Pageable pageable,
+        String searchCondition
+    ) {
+        if (!Util.isAllEmpty(gpuArchitecture, gpuBrand) && gpuModel != null && (gpuModel.equals("GENERIC NVIDIA") || gpuModel.equals("GENERIC AMD"))) {
+            if (StringUtils.isEmpty(algorithm)) {
+                List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuModel(gpuArchitecture, gpuModel, pageable);;
+                Integer count = overlockSettingRepository.countAllByGpuArchitectureAndGpuModel(gpuArchitecture, gpuModel);
+                return buildResult(settings, count, searchCondition);
+            } else {
+                List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuModelAndAlgorithm(gpuArchitecture, gpuModel, algorithm, pageable);
+                Integer count = overlockSettingRepository.countAllByGpuArchitectureAndGpuModelAndAlgorithm(gpuArchitecture, gpuModel, algorithm);
+                return buildResult(settings, count, searchCondition);
+            }
+        } else if (gpuArchitecture != null && Util.isAllEmpty(gpuBrand, gpuModel, algorithm)) {
+            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitecture(gpuArchitecture, pageable);
             int count = overlockSettingRepository.countAllByGpuArchitecture(gpuArchitecture);
-            return buildResult(settings, count);
+            return buildResult(settings, count, searchCondition);
         } else if (gpuBrand != null && Util.isAllEmpty(gpuModel, algorithm)) {
-            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrandOrderByVotesUpDescVotesDownAsc(gpuArchitecture, gpuBrand, pageable);
+            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrand(gpuArchitecture, gpuBrand, pageable);
             int count = overlockSettingRepository.countAllByGpuArchitectureAndGpuBrand(gpuArchitecture, gpuBrand);
-            return buildResult(settings, count);
+            return buildResult(settings, count, searchCondition);
         } else if (gpuModel != null && Util.isAllEmpty(algorithm)) {
-            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrandAndGpuModelOrderByVotesUpDescVotesDownAsc(gpuArchitecture, gpuBrand, gpuModel, pageable);
+            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrandAndGpuModel(gpuArchitecture, gpuBrand, gpuModel, pageable);
             int count = overlockSettingRepository.countAllByGpuArchitectureAndGpuBrandAndGpuModel(gpuArchitecture, gpuBrand, gpuModel);
-            return buildResult(settings, count);
+            return buildResult(settings, count, searchCondition);
         } else {
-            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrandAndGpuModelAndAlgorithmOrderByVotesUpDescVotesDownAsc(gpuArchitecture, gpuBrand, gpuModel, algorithm, pageable);
+            List<OverlockSetting> settings = overlockSettingRepository.findAllByGpuArchitectureAndGpuBrandAndGpuModelAndAlgorithm(gpuArchitecture, gpuBrand, gpuModel, algorithm, pageable);
             int count = overlockSettingRepository.countAllByGpuArchitectureAndGpuBrandAndGpuModelAndAlgorithm(gpuArchitecture, gpuBrand, gpuModel, algorithm);
-            return buildResult(settings, count);
+            return buildResult(settings, count, searchCondition);
         }
     }
 
-    private ResponseDTO buildResult(List<OverlockSetting> settings, int count) {
+    private ResponseDTO buildResult(List<OverlockSetting> settings, int count, String searchCondition) {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setContent(Util.getResult(settings));
+        responseDTO.setContent(Util.getResult(settings, searchCondition));
         responseDTO.setTotalElements(count);
         return responseDTO;
     }

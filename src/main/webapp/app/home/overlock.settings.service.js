@@ -14,8 +14,8 @@
         ];
 
         this.gpuBrand = [
-            "NVIDIA",
-            "AMD",
+            "GENERIC NVIDIA",
+            "GENERIC AMD",
             "Asus",
             "Gigabyte",
             "EVGA",
@@ -28,7 +28,7 @@
         ];
 
         this.gpuModel = {
-            "NVIDIA": [
+            "GENERIC NVIDIA": [
                 "Titan V",
                 "Titan Xp",
                 "Titan X (Pascal, 2016)",
@@ -71,7 +71,7 @@
                 "GT 650",
                 "GTX 550 Ti"
             ],
-            "AMD": [
+            "GENERIC AMD": [
                     "RX Vega 64",
                     "RX Vega 56",
                     "R9 Fury X",

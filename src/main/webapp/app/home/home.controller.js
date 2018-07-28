@@ -15,6 +15,10 @@
         vm.numberPerPage = 5;
         vm.data = [];
 
+        vm.sortType     = 'vm.rank'; // set the default sort type
+        vm.sortIt  = false;  // set the default sort order
+        vm.searchTerm   = '';
+
         vm.overlockOptions = {};
         vm.allowToAddNewSetting = false;
 
@@ -35,6 +39,43 @@
         vm.enableBrand = false;
         vm.enableModel = false;
         vm.enableAlgorithm = false;
+
+        vm.search = function () {
+            vm.overlockOptions.searchCondition = vm.searchTerm;
+
+            OverlockSettingService
+                .findSettings(vm.overlockOptions, vm.currentPage, vm.numberPerPage)
+                .success(function (data) {
+                    vm.data = data.content;
+                    var startPosition = vm.currentPage * vm.numberPerPage - 5;
+                    for (var i = 0, length = vm.data.length; i < length; i++) {
+                        var e = vm.data[i];
+                        e.position = ++startPosition;
+                    }
+                    vm.totalItems = data.totalElements;
+                });
+        };
+
+        vm.sort = function (sortType) {
+            vm.sortType = sortType;
+            vm.sortIt = !vm.sortIt;
+
+            vm.overlockOptions.sortProperty = vm.sortType;
+            vm.overlockOptions.sortIt = vm.sortIt ? 'desc' : 'asc';
+
+
+            OverlockSettingService
+                .findSettings(vm.overlockOptions, vm.currentPage, vm.numberPerPage)
+                .success(function (data) {
+                    vm.data = data.content;
+                    var startPosition = vm.currentPage * vm.numberPerPage - 5;
+                    for (var i = 0, length = vm.data.length; i < length; i++) {
+                        var e = vm.data[i];
+                        e.position = ++startPosition;
+                    }
+                    vm.totalItems = data.totalElements;
+                });
+        };
 
         vm.pageChanged = function () {
             OverlockSettingService
